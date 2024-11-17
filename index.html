@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - LX Library (Pty) Ltd</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #pdf-container canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+        .btn {
+            background-color: rgb(11, 201, 205);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<div class="max-w-4xl mx-auto p-6">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Terms of Service</h1>
+        <div class="flex items-center gap-4">
+            <select id="version-select" class="px-4 py-2 border rounded-lg shadow-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="v1.0.0">Version 1.0.0</option>
+            </select>
+            <span class="text-sm text-gray-500">Last updated: November 17, 2024</span>
+        </div>
+        <div class="mt-4 text-gray-700">LX Library (Pty) Ltd</div>
+    </div>
+
+    <!-- PDF Viewer -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <div id="pdf-container" class="min-h-[800px]"></div>
+        <div class="flex justify-between mt-4">
+            <button id="prev-page" class="btn px-4 py-2 rounded-lg shadow-sm">Previous</button>
+            <button id="next-page" class="btn px-4 py-2 rounded-lg shadow-sm">Next</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const pdfVersions = {
+        'v1.0.0': './tos/tos-v1.0.0.pdf'
+    };
+
+    let pdfDoc = null;
+    let currentPage = 1;
+    const scale = 2.0; // Increase scale for better quality
+
+    async function loadPDF(url) {
+        try {
+            const loadingTask = pdfjsLib.getDocument(url);
+            pdfDoc = await loadingTask.promise;
+            currentPage = 1;
+            renderPage(currentPage);
+        } catch (error) {
+            console.error('Error loading PDF:', error);
+            document.getElementById('pdf-container').innerHTML =
+                '<p class="text-red-500 text-center">Error loading PDF. Please try again later.</p>';
+        }
+    }
+
+    async function renderPage(pageNum) {
+        try {
+            const page = await pdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale });
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+
+            const container = document.getElementById('pdf-container');
+            container.innerHTML = '';
+            container.appendChild(canvas);
+
+            await page.render(renderContext).promise;
+        } catch (error) {
+            console.error('Error rendering page:', error);
+        }
+    }
+
+    document.getElementById('version-select').addEventListener('change', (e) => {
+        loadPDF(pdfVersions[e.target.value]);
+    });
+
+    document.getElementById('prev-page').addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderPage(currentPage);
+        }
+    });
+
+    document.getElementById('next-page').addEventListener('click', () => {
+        if (currentPage < pdfDoc.numPages) {
+            currentPage++;
+            renderPage(currentPage);
+        }
+    });
+
+    // Load initial version
+    loadPDF(pdfVersions['v1.0.0']);
+</script>
+</body>
+</html>
