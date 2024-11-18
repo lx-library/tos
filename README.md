@@ -20,9 +20,9 @@ The repository contains:
 ## Viewing the Terms of Service
 
 The Terms of Service can be viewed in two ways:
-1. Directly through our hosted page at [https://lxlibrary.github.io/tos](https://lxlibrary.github.io/tos)
+1. Directly through our hosted page at [https://lx-library.github.io/tos](https://lx-library.github.io/tos)
 2. By accessing specific versions using URL parameters
-    - Example: `https://lxlibrary.github.io/tos?version=v1.0.0`
+    - Example: `https://lx-library.github.io/tos?version=v1.0.0`
     - When using a version parameter, the version selector will be hidden
 
 ## Implementation Details
