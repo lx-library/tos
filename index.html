@@ -30,6 +30,11 @@
                 padding: 1rem 2rem;
             }
         }
+        @media (max-width: 639px) {
+            #pdf-container {
+                min-height: 50vh;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -37,7 +42,7 @@
     <!-- Header -->
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900 mb-2">Terms of Service</h1>
-        <div class="flex items-center gap-4">
+        <div id="version-container" class="flex items-center gap-4">
             <select id="version-select" class="px-4 py-2 border rounded-lg shadow-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="v1.0.0">Version 1.0.0</option>
             </select>
@@ -66,6 +71,11 @@
     let pdfDoc = null;
     let currentPage = 1;
     const scale = 2.0; // Increase scale for better quality
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
 
     async function loadPDF(url) {
         try {
@@ -124,7 +134,13 @@
     });
 
     // Load initial version
-    loadPDF(pdfVersions['v1.0.0']);
+    const versionParam = getQueryParam('version');
+    if (versionParam && pdfVersions[versionParam]) {
+        document.getElementById('version-container').style.display = 'none';
+        loadPDF(pdfVersions[versionParam]);
+    } else {
+        loadPDF(pdfVersions['v1.0.0']);
+    }
 </script>
 </body>
 </html>
