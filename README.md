@@ -37,6 +37,13 @@ The Terms of Service can be viewed in two ways:
 
 - v1.0.0 - Initial Terms of Service release
 
+## API Access
+
+Applications can retrieve the latest Terms of Service version by sending a GET
+request to `https://lx-library.github.io/tos/latest.json`. The response
+returns a JSON payload with the current version and URLs to both the PDF file
+and the viewer page.
+
 ## License
 
 This repository is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
